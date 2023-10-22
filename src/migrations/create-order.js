@@ -2,24 +2,28 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Subcategories', {
-      id_subcate: {
+    await queryInterface.createTable('Orders', {
+      id_order: {
         type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-      },
-      name_subcate: {
-        type: Sequelize.STRING(255),
+        autoIncrement: true,
         allowNull: false,
       },
-      slug: {
-        type: Sequelize.STRING(255),
+      status: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
-      id_cate: {
-        type: Sequelize.INTEGER,
+      total_amount: {
+        type: Sequelize.DOUBLE(8, 2),
         allowNull: false,
+      },
+      id_user: {
+        type: Sequelize.STRING,
+        allowNull: false, 
+      },
+      note: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -32,6 +36,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Subcategories');
+    await queryInterface.dropTable('Orders');
   }
 };

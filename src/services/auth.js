@@ -9,7 +9,7 @@ export const registerService = ({email,password}) => new Promise( async (resolve
     try {
         
         const data_user = {
-            id: uniqid(),
+            id_user: uniqid(),
             email: email,
             password: hashPassword(password),
             //role:1
@@ -21,7 +21,7 @@ export const registerService = ({email,password}) => new Promise( async (resolve
         console.log('processing response....',response);
         const token = response?  jwt.sign(
             {
-                id:data_user.id,
+                id_user:data_user.id_user,
                 email:data_user.email
             },
             process.env.SECRET_KEY,
@@ -32,6 +32,30 @@ export const registerService = ({email,password}) => new Promise( async (resolve
         resolve({
             err:token? 0 : 2,
             msg: token? 'Đăng ký thành công!': 'Email đã tồn tại!',
+            token: token || null
+        })
+    } catch (error) {
+        reject(error)
+    }
+})
+export const loginService = ({email,password}) => new Promise( async (resolve,reject) =>{
+    try {
+        const user = await db.User.findOne({ where: { email }, raw:true })
+        console.log('processing response....',user);
+        const isCorrect = user? bcrypt.compareSync(password,user.password) : false
+        const token = isCorrect?  jwt.sign(
+            {
+                id_user:user.id_user,
+                email:user.email
+            },
+            process.env.SECRET_KEY,
+            {expiresIn:'30d'}
+        ) : null
+        console.log('processing token....',token);
+
+        resolve({
+            err:token? 0 : 2,
+            msg: token? 'Đăng nhập thành công!': 'Sai email hoặc mật khẩu!',
             token: token || null
         })
     } catch (error) {

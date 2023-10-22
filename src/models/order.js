@@ -5,7 +5,7 @@ const {
 // import {Categorie} from './category'
 // import {Subcategorie} from './subcategory'
 module.exports = (sequelize, DataTypes) => {
-  class Product extends Model {
+  class Order extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -17,24 +17,19 @@ module.exports = (sequelize, DataTypes) => {
       //Product.belongsTo(Categorie, { foreignKey: 'id_cate' });
     }
   }
-  Product.init({
-    id_pd: {
+  Order.init({
+    id_order: {
       type: DataTypes.INTEGER, 
       primaryKey: true, 
       autoIncrement: true, 
     },
-    name_pd: DataTypes.STRING,
-    id_cate: DataTypes.INTEGER, 
-    id_subcate: DataTypes.INTEGER, 
-    price: DataTypes.DOUBLE,
-    material: DataTypes.STRING,
-    size: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    inventory: DataTypes.INTEGER,
-    slug: DataTypes.STRING,
+    status: DataTypes.STRING,
+    total_amount: DataTypes.DOUBLE,
+    id_user: DataTypes.STRING,
+    note: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Product',
+    modelName: 'Order',
   });
-  return Product;
+  return Order;
 };

@@ -11,11 +11,11 @@ module.exports = {
       },
       id_cate: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       id_subcate: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       name_pd: {
         type: Sequelize.STRING,
