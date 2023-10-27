@@ -1,0 +1,4 @@
+//err code login:
+"err": 2, "msg": "Sai email hoặc mật khẩu!",
+"err": 1, "msg": "Nhập thiếu gì đó rồi!"
+"err": -1, "msg": "Loi server!"

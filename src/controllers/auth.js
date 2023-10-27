@@ -1,5 +1,5 @@
 import * as authService from '../services/auth'
-import * as addService from '../services/crudService'
+import * as crudService from '../services/crudService'
 import bcrypt from 'bcryptjs'
 import uniqid from 'uniqid'
 
@@ -13,9 +13,7 @@ export const register = async (req, res) =>{
             err:1,
             msg:'Nhập thiếu gì đó rồi!'
         })
-        const finder = {email:email}
-        const creater = {id_user: uniqid(), email:email, password: hashPassword(password)}
-        const response = await addService.add(finder,creater,'user','tài khoản')
+        const response = await authService.registerService(req.body)
         console.log(response);
         return res.status(200).json(response)
     } catch (error) {
@@ -28,7 +26,7 @@ export const register = async (req, res) =>{
 export const login = async (req, res) =>{
     const { email, password} = req.body
     try {
-        console.log(console.log(email,password))
+        console.log('Log req data:',email,password)
         if ( !email || !password) return res.status(400).json({
             err:1,
             msg:'Login: Nhập thiếu gì đó rồi!'

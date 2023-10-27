@@ -24,14 +24,16 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true, 
     },
     name_pd: DataTypes.STRING,
+    image: DataTypes.STRING,
     id_cate: DataTypes.INTEGER, 
     id_subcate: DataTypes.INTEGER, 
     price: DataTypes.DOUBLE,
     material: DataTypes.STRING,
     size: DataTypes.STRING,
+    brand: DataTypes.STRING,
     description: DataTypes.TEXT,
     inventory: DataTypes.INTEGER,
-    slug: DataTypes.STRING,
+    slug: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Product',

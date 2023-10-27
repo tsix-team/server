@@ -2,17 +2,16 @@ import express from 'express'
 import * as cateController from '../controllers/category'
 const router = express.Router();
 
-router.get('/get',cateController.getCate)
-router.get('/get/:id',cateController.getByIdCate)
-router.post('/add',cateController.addCate)
+router.get('/',cateController.getCate)
 
-router.delete('/delete',cateController.deleteCate)
+router.get('/:id',cateController.getByIdCate)
 
-router.put('/update/:id',cateController.updateCate)
+router.post('/',cateController.addCate)
+
+router.put('/:id',cateController.updateCate)
+
+router.delete('/:id',cateController.deleteCate)
 
 
 
-router.get('/',(req,res)=>{
-    res.json('Category page')
-})
 export default router
