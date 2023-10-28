@@ -6,17 +6,17 @@ import { slugger } from '../services/lib'
 const model = {modelName :'cate',what: 'danh mục'}
 
 export const addCate = async (req, res) =>{
-    const {name} = req.body
-    console.log(name);
+    const {name_cate} = req.body
+    console.log(name_cate);
     //obj finder, obj create, model = "cate", what = "Danh mục"
     
     try {
-        if (!name) return res.status(400).json({
+        if (!name_cate) return res.status(400).json({
             err:1,
             msg:'Nhập thiếu gì đó rồi!'
         })
-        const finder = {name_cate:name}
-        const creater = {name_cate:name,slug:slugger(name)}
+        const finder = {name_cate}
+        const creater = {name_cate,slug:slugger(name_cate)}
         const response = await crudService.add(finder,creater, model)
         console.log(response);
         return res.status(200).json(response)

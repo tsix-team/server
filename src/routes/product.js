@@ -4,7 +4,9 @@ import uploadCloud from '../config/cloudinary.config';
 
 const router = express.Router();
 
-router.get('/',cateController.getPd)
+router.get('/',cateController.getPdLimit)
+
+router.get('/all',cateController.getPd)
 
 router.get('/imgs',cateController.getPdImgs)
 

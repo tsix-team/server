@@ -43,6 +43,22 @@ export const getAll = (model) => new Promise( async (resolve,reject) =>{
         reject(error)
     }
 })
+export const getLimit = (options, model) => new Promise( async (resolve,reject) =>{
+    const {modelName,what} = model
+    console.log(options);
+    //page = 1, results_per_page = 10; page_first_result = (page-1) * results_per_page;
+    try {
+        
+        const response = await models[modelName].findAll({...options, raw:true })
+        resolve({
+            err:response? 0 : 2,
+            msg: response? `Lấy tất cả ${what} thành công!`: `Trống trơn!`,
+            response: response
+        })
+    } catch (error) {
+        reject(error)
+    }
+})
 export const getOne = (finder,model) => new Promise( async (resolve,reject) =>{
     const {modelName,what} = model
     try {

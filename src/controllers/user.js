@@ -47,8 +47,13 @@ export const removeUser = async (req, res) =>{
     }
 }
 export const getAllUser = async (req, res) =>{
+    const page = req.query.page || 1 // Trang thứ 2
+    const size = req.query.size || 5 // Số bản ghi trên mỗi trang
+
+    const offset = (page - 1) * size // Tính offset
+    const limit = size*1
     try {
-        const response = await crudService.getAll(model)
+        const response = await crudService.getLimit({offset,limit},model)
         console.log(response);
         return res.status(200).json(response)
     } catch (error) {
