@@ -4,6 +4,7 @@ import * as crudService from '../services/crudService'
 import { slugger } from '../services/lib'
 
 const model = {modelName :'cate',what: 'danh mục'}
+const modelSubcate = {modelName :'subcate',what: 'danh mục con'}
 
 export const addCate = async (req, res) =>{
     const {name_cate} = req.body
@@ -23,7 +24,7 @@ export const addCate = async (req, res) =>{
     } catch (error) {
         return res.status(500).json({
             err:-1,
-            msg: 'Fail at auth controller: '+ error
+            msg: 'Fail at controller: '+ error
         })
     }
 }
@@ -42,7 +43,7 @@ export const deleteCate = async (req, res) =>{
     } catch (error) {
         return res.status(500).json({
             err:-1,
-            msg: 'Fail at auth controller: '+ error
+            msg: 'Fail at controller: '+ error
         })
     }
 }
@@ -54,7 +55,7 @@ export const getCate = async (req, res) =>{
     } catch (error) {
         return res.status(500).json({
             err:-1,
-            msg: 'Fail at auth controller: '+ error
+            msg: 'Fail at controller: '+ error
         })
     }
 }
@@ -67,7 +68,7 @@ export const getByIdCate = async (req, res) =>{
     } catch (error) {
         return res.status(500).json({
             err:-1,
-            msg: 'Fail at auth controller: '+ error
+            msg: 'Fail at controller: '+ error
         })
     }
 }
@@ -88,7 +89,105 @@ export const updateCate = async (req, res) =>{
     } catch (error) {
         return res.status(500).json({
             err:-1,
-            msg: 'Fail at auth controller: '+ error
+            msg: 'Fail at controller: '+ error
+        })
+    }
+}
+
+//subcate
+export const addSubcate = async (req, res) =>{
+    const dataForm = {...req.body}
+    console.log(dataForm);
+    
+    try {
+        if (!dataForm.name_subcate||!dataForm.id_cate) return res.status(400).json({
+            err:1,
+            msg:'Nhập thiếu gì đó rồi!'
+        })
+        const finder = {name_subcate:dataForm.name_subcate}
+        const creater = {...dataForm,slug:slugger(dataForm.name_subcate)}
+        const response = await crudService.add(finder, creater, modelSubcate)
+        console.log(response);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err:-1,
+            msg: 'Fail at controller: '+ error
+        })
+    }
+}
+export const deleteSubcate = async (req, res) =>{
+    const {id} = req.params
+    console.log(id);
+    try {
+        const finder = {id_subcate:id}
+        const response = await crudService.deleteOne(finder,modelSubcate)
+        console.log(response);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err:-1,
+            msg: 'Fail at controller: '+ error
+        })
+    }
+}
+export const getSubcate = async (req, res) =>{
+    try {
+        const response = await crudService.getAll(modelSubcate)
+        console.log('res from controller: ',response);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err:-1,
+            msg: 'Fail at controller: '+ error
+        })
+    }
+}
+export const getSubcateByIdCate = async (req, res) =>{
+    //find all subcate where id_cate = id_cate
+    try {
+        const finder = {id_cate:req.params.id}
+        const response = await crudService.getAllWhere(finder, modelSubcate)
+        console.log('res from controller: ',response);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err:-1,
+            msg: 'Fail at controller: '+ error
+        })
+    }
+}
+export const getSubcateByIdSubcate = async (req, res) =>{
+    try {
+        const finder = {id_subcate:req.params.id}
+        const response = await crudService.getOne(finder, modelSubcate)
+        console.log('res from controller: ',response);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err:-1,
+            msg: 'Fail at controller: '+ error
+        })
+    }
+}
+export const updateSubcate = async (req, res) =>{
+    const {id} = req.params
+    const dataForm = {...req.body}
+
+    try {
+        if (!dataForm.name_subcate||!dataForm.id_cate) return res.status(400).json({
+            err:1,
+            msg:'thiếu gì đó rồi!'
+        })
+        const finder = {id_subcate:id}
+        const objUpdate = dataForm
+        const response = await crudService.update(finder,objUpdate,modelSubcate)
+        console.log(response);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err:-1,
+            msg: 'Fail at controller: '+ error
         })
     }
 }

@@ -102,6 +102,22 @@ export const updateUser = async (req, res) =>{
         })
     }
 }
+export const banUser = async (req, res) =>{
+    const {id} = req.params
+    console.log(dataForm);
+    try {
+        const finder = {id_user:id}
+        const objUpdate = {status:-1}
+        const response = await crudService.update(finder,objUpdate,model)
+        console.log(response);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err:-1,
+            msg: 'Fail at auth controller: '+ error
+        })
+    }
+}
 // export const testing = () =>{
 //     console.log("OK con de")
 //     testService.logger()

@@ -12,16 +12,18 @@ module.exports = {
       id_cate: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        defaultValue: 0
       },
       id_subcate: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        defaultValue: 0
       },
       name_pd: {
         type: Sequelize.STRING,
         allowNull: false, 
       },
-      main_img: {
+      image: {
         type: Sequelize.STRING,
         allowNull: false, 
       },
@@ -31,11 +33,11 @@ module.exports = {
       },
       material: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       size: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       brand: {
         type: Sequelize.INTEGER,
@@ -48,6 +50,7 @@ module.exports = {
       inventory: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 1
       },
       slug: {
         type: Sequelize.STRING,

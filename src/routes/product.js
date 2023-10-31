@@ -8,11 +8,11 @@ router.get('/',cateController.getPdLimit)
 
 router.get('/all',cateController.getPd)
 
-router.get('/imgs',cateController.getPdImgs)
+router.get('/imgs/:id',cateController.getPdImgs)
 
 router.get('/:slug',cateController.getOnePd)
 
-router.post('/',uploadCloud.fields([{ name: 'image' }, { name: 'images' }]),cateController.addPd)
+router.post('/',cateController.addPd)
 
 router.put('/:id',cateController.updatePd)
 

@@ -105,7 +105,6 @@ export const deleteOne = (finder,model) => new Promise( async (resolve,reject) =
         reject(error)
     }
 })
-
 export const addImages = (arrImg,model) => new Promise( async (resolve,reject) =>{
     const {modelName,what} = model
     try {
