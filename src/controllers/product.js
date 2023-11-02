@@ -13,67 +13,69 @@ const modelImg = { modelName: 'image', what: 'hình ảnh' }
  */
 
 export const addPd = async (req, res) => {
-    const formData = { ...req.body }
-    const uploadedImage = req.files?.image
-    const uploadedImages = req.files?.images
-    console.log("req data: ",formData,uploadedImage,uploadedImages); //undefined
+    const {uploadedImage,uploadedImages,...formData} = req.body
+    console.log("req formData: ",formData); //
+    console.log("req uploadedImage: ",uploadedImage); //
+    console.log("req uploadedImages: ",uploadedImages); //
     //obj finder, obj create, model = "pd", what = "Danh mục"
     let isValidate = true
-    // try {
-    //     if (!formData.name_pd) {
-    //         //clear imgs
-    //         if (uploadedImage) {
-    //             cloudinary.uploader.destroy(uploadedImage[0]?.filename)
-    //         }
-    //         if (uploadedImages) {
-    //             uploadedImages.forEach(image => {
-    //                 cloudinary.uploader.destroy(image.filename)
-    //             });
-    //         }
-    //         return res.status(400).json({
-    //             err: 1,
-    //             msg: 'Nhập thiếu gì đó rồi!'
-    //         })
-    //     }
+    try {
+        if (!formData.name_pd) {
+            //clear imgs
+            if (uploadedImage) {
+                cloudinary.uploader.destroy(uploadedImage[0]?.filename)
+            }
+            if (uploadedImages) {
+                uploadedImages.forEach(image => {
+                    cloudinary.uploader.destroy(image.filename)
+                });
+            }
+            return res.status(400).json({
+                err: 1,
+                msg: 'Nhập thiếu gì đó rồi!'
+            })
+        }
 
-    //     console.log("img here: ", uploadedImage, uploadedImages);
-    //     const finder = { name_pd: formData.name_pd }
-    //     const creater = { ...formData, slug: slugger(formData.name_pd), image: uploadedImage[0]?.path }
-    //     const response = await crudService.add(finder, creater, model)
-    //     if (response && response.err == 0) {
-    //         // uploadedImages là 1 mảng chứa các đối tượng image, tromg image có path url
-    //         const arrUrls = uploadedImages.map(img => img.path);
-    //         const arrFilenames = uploadedImages.map(img => img.filename);
-    //         const arrImgs = []
-    //         for (let i = 0; i < arrUrls.length; i++) {
-    //             const imgObj = {
-    //                 id_pd: response.response.id_pd,
-    //                 url: arrUrls[i],
-    //                 alt: response.response.slug + `_img_${i}`,
-    //                 filename: arrFilenames[i],
-    //             };
-    //             arrImgs.push(imgObj);
-    //         }
-    //         await crudService.addImages(arrImgs, modelImg)
-    //     } else if (response && response.err == 2) {
-    //         isValidate = false
-    //     }
-    //     if (isValidate == false && uploadedImage) {
-    //         cloudinary.uploader.destroy(uploadedImage[0]?.filename)
-    //     }
-    //     if (isValidate == false && uploadedImages) {
-    //         uploadedImages.forEach(image => {
-    //             cloudinary.uploader.destroy(image.filename)
-    //         });
-    //     }
-    //     return res.status(200).json(response)
+        console.log("img here: ", uploadedImage, uploadedImages);
+        const finder = { name_pd: formData.name_pd }
+        const creater = { ...formData, slug: slugger(formData.name_pd), image: uploadedImage[0]?.path }
+        const response = await crudService.add(finder, creater, model)
+        if (response && response.err == 0) {
+            // uploadedImages là 1 mảng chứa các đối tượng image, tromg image có path url
+            const arrUrls = uploadedImages?.map(img => img.path)||null;
+            const arrFilenames = uploadedImages?.map(img => img.filename);
+            const arrImgs = []
+            if (arrUrls) {
+                for (let i = 0; i < arrUrls.length; i++) {
+                const imgObj = {
+                    id_pd: response.response.id_pd,
+                    url: arrUrls[i],
+                    alt: response.response.slug + `_img_${i}`,
+                    filename: arrFilenames[i],
+                };
+                arrImgs.push(imgObj);
+            }
+            await crudService.addImages(arrImgs, modelImg)
+            }
+        } else if (response && response.err == 2) {
+            isValidate = false
+        }
+        if (isValidate == false && uploadedImage) {
+            cloudinary.uploader.destroy(uploadedImage[0]?.filename)
+        }
+        if (isValidate == false && uploadedImages) {
+            uploadedImages.forEach(image => {
+                cloudinary.uploader.destroy(image.filename)
+            });
+        }
+        return res.status(200).json(response)
 
-    // } catch (error) {
-    //     return res.status(500).json({
-    //         err: -1,
-    //         msg: 'Fail at controller: ' + error
-    //     })
-    // }
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Fail at controller: ' + error
+        })
+    }
     res.json("test")
 }
 export const deletePd = async (req, res) => {

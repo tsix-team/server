@@ -12,7 +12,7 @@ router.get('/imgs/:id',cateController.getPdImgs)
 
 router.get('/:slug',cateController.getOnePd)
 
-router.post('/',cateController.addPd)
+router.post('/',uploadCloud.none(),cateController.addPd)
 
 router.put('/:id',cateController.updatePd)
 

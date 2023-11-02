@@ -9,15 +9,15 @@ const model = {modelName :'user',what: 'tài khoản'}
 //create | update | getOne | getAll | delete
 
 export const addUser = async (req, res) =>{
-    const { email, password} = req.body
-    console.log(email, password);
+    const dataForm = {...req.body}
+    console.log(dataForm);
     try {
-        if ( !email || !password) return res.status(400).json({
+        if ( !dataForm.email || !dataForm.password) return res.status(400).json({
             err:1,
             msg:'Nhập thiếu gì đó rồi!'
         })
-        const finder = {email:email}
-        const creater = {id_user: uniqid.time(), email:email, password: hashPassword(password)}
+        const finder = {email:dataForm.email}
+        const creater = {id_user: uniqid.time(),...dataForm, password: hashPassword(dataForm.password)}
         const response = await crudService.add(finder,creater,model)
         console.log(response);
         return res.status(200).json(response)
