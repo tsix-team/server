@@ -14,7 +14,7 @@ router.get('/:slug',cateController.getOnePd)
 
 router.post('/',uploadCloud.none(),cateController.addPd)
 
-router.put('/:id',cateController.updatePd)
+router.put('/:slug',uploadCloud.none(),cateController.updatePd)
 
 router.delete('/:id',cateController.deletePd)
 

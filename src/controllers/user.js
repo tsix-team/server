@@ -104,7 +104,6 @@ export const updateUser = async (req, res) =>{
 }
 export const banUser = async (req, res) =>{
     const {id} = req.params
-    console.log(dataForm);
     try {
         const finder = {id_user:id}
         const objUpdate = {status:-1}

@@ -57,7 +57,7 @@ export const loginService = ({email,password}) => new Promise( async (resolve,re
                 success: false
             })
         } else{
-            const token = isCorrect?  jwt.sign(
+            const token = isCorrect? jwt.sign(
                 {
                     id_user:user.id_user,
                     email:user.email,
