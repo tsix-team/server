@@ -10,11 +10,11 @@ router.get('/all',cateController.getPd)
 
 router.get('/imgs/:id',cateController.getPdImgs)
 
-router.get('/:slug',cateController.getOnePd)
+router.get('/:id',cateController.getOnePd)
 
 router.post('/',uploadCloud.none(),cateController.addPd)
 
-router.put('/:slug',uploadCloud.none(),cateController.updatePd)
+router.put('/:id',uploadCloud.none(),cateController.updatePd)
 
 router.delete('/:id',cateController.deletePd)
 

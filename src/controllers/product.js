@@ -13,8 +13,6 @@ const modelImg = { modelName: 'image', what: 'hình ảnh' }
 export const addPd = async (req, res) => {
     const { uploadedImage, uploadedImages, ...formData } = req.body
     console.log("req formData: ", formData); //
-    console.log("req uploadedImage: ", uploadedImage); //
-    console.log("req uploadedImages: ", uploadedImages); //
     //obj finder, obj create, model = "pd", what = "Danh mục"
     let isValidate = true
     try {
@@ -36,7 +34,10 @@ export const addPd = async (req, res) => {
 
         console.log("img here: ", uploadedImage, uploadedImages);
         const finder = { name_pd: formData.name_pd }
-        const creater = { ...formData, slug: slugger(formData.name_pd), image: uploadedImage[0]?.path }
+        
+        const creater = uploadedImage ?  
+            { ...formData, slug: slugger(formData.name_pd), image: uploadedImage[0]?.path }
+            :{ ...formData, slug: slugger(formData.name_pd), image: 'none' }
         const response = await crudService.add(finder, creater, model)
         if (response && response.err == 0) {
             // uploadedImages là 1 mảng chứa các đối tượng image, tromg image có path url
@@ -81,24 +82,26 @@ export const deletePd = async (req, res) => {
     try {
         const finder = { id_pd: id }
         const findImgs = await crudService.getAllWhere(finder, modelImg)
-
         const findPd = await crudService.getOne(finder, model)
-        const img = findPd.response
-        console.log(img)
-        const urlImg = img.image
-        const imgs = findImgs.response
-        //convert url to filename
-        const parts = urlImg.split('/')
-        const fileParts = parts.slice(-2).join('/')
-        const filenameImg = fileParts.split('.').slice(0, -1).join('.')
-        //destroy imgs on cloud
-        await cloudinary.uploader.destroy(filenameImg)
-        imgs.forEach(image => {
-            cloudinary.uploader.destroy(image.filename)
-        });
-        await crudService.deleteOne(finder, modelImg)
+        if (findImgs.response == []||findImgs.response == null) {
+             const imgs = findImgs.response
+             imgs.forEach(image => {
+                cloudinary.uploader.destroy(image.filename)
+            });
+            await crudService.deleteOne(finder, modelImg)
+        }
+        if (findPd.response == [] ||findPd.response == null) {
+            const img = findPd?.response
+            const urlImg = img.image
+        
+            //convert url to filename
+            const parts = urlImg.split('/')
+            const fileParts = parts.slice(-2).join('/')
+            const filenameImg = fileParts.split('.').slice(0, -1).join('.')
+            //destroy imgs on cloud
+            await cloudinary.uploader.destroy(filenameImg)
+        }
         const response = await crudService.deleteOne(finder, model)
-        console.log(response);
         return res.status(200).json(response)
     } catch (error) {
         return res.status(500).json({
@@ -153,7 +156,7 @@ export const getPdImgs = async (req, res) => {
 }
 export const getOnePd = async (req, res) => {
     try {
-        const finder = { slug: req.params.slug }
+        const finder = { id_pd: req.params.id }
         const response = await crudService.getOne(finder, model)
         console.log('res from controller: ', response);
         return res.status(200).json(response)
@@ -165,7 +168,7 @@ export const getOnePd = async (req, res) => {
     }
 }
 export const updatePd = async (req, res) => {
-    const { slug } = req.params
+    const { id } = req.params
     const { uploadedImage, uploadedImages, form_imagecheck, ...formData } = req.body
     console.log("req formData: ", formData); //
     console.log("req uploadedImage: ", uploadedImage); //
@@ -190,7 +193,7 @@ export const updatePd = async (req, res) => {
         }
 
         console.log("img here: ", uploadedImage, uploadedImages);
-        const finder = { slug: slug }
+        const finder = { id_pd: id }
         const findPd = await crudService.getOne(finder, model)
         const creater = uploadedImage ? { ...formData, slug: slugger(formData.name_pd), image: uploadedImage[0]?.path }
             : { ...formData, slug: slugger(formData.name_pd) }
