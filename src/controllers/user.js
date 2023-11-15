@@ -48,7 +48,7 @@ export const removeUser = async (req, res) =>{
 }
 export const getAllUser = async (req, res) =>{
     const page = req.query.page || 1 // Trang thứ 2
-    const size = req.query.size || 5 // Số bản ghi trên mỗi trang
+    const size = req.query.size || 10 // Số bản ghi trên mỗi trang
 
     const offset = (page - 1) * size // Tính offset
     const limit = size*1
@@ -106,7 +106,15 @@ export const banUser = async (req, res) =>{
     const {id} = req.params
     try {
         const finder = {id_user:id}
-        const objUpdate = {status:-1}
+        const user = await crudService.getOne(finder,model)
+        const dataUser = user.response
+        if (dataUser?.role == 2) {
+            return res.status(300).json({
+                err: -3,
+                msg: 'Không thể vô hiệu hóa admin!'
+            })
+        }
+        const objUpdate = (dataUser?.status == -1)? {status:0} : {status:-1}
         const response = await crudService.update(finder,objUpdate,model)
         console.log(response);
         return res.status(200).json(response)

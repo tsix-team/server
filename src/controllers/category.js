@@ -173,14 +173,14 @@ export const getSubcateByIdSubcate = async (req, res) =>{
 export const updateSubcate = async (req, res) =>{
     const {id} = req.params
     const dataForm = {...req.body}
-
+    console.log('Dataform subcate: ',dataForm);
     try {
         if (!dataForm.name_subcate||!dataForm.id_cate) return res.status(400).json({
             err:1,
             msg:'thiếu gì đó rồi!'
         })
         const finder = {id_subcate:id}
-        const objUpdate = dataForm
+        const objUpdate = {...dataForm,slug:slugger(dataForm.name_subcate)}
         const response = await crudService.update(finder,objUpdate,modelSubcate)
         console.log(response);
         return res.status(200).json(response)

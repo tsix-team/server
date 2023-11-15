@@ -10,6 +10,8 @@ router.get('/:id',userController.getOneUser)
 
 router.put('/:id',userController.updateUser) 
 
+router.put('/ban/:id',userController.banUser)
+
 router.delete('/:id',userController.removeUser)
 
 
