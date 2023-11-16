@@ -157,7 +157,13 @@ export const getPdImgs = async (req, res) => {
 export const getOnePd = async (req, res) => {
     
     try {
-        const finder = req.params.id ? { id_pd: req.params.id } : {slug:req.params.slug}
+        let isId
+        if (/^\d+$/.test(req.params.id)) {
+            isId = true 
+          } else {
+            isId = false
+          }
+        const finder = isId ? { id_pd: req.params.id } : {slug:req.params.id}
         const response = await crudService.getOne(finder, model)
         console.log('res from controller: ', response);
         return res.status(200).json(response)
