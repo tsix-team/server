@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+import db from '../models';
+
 //const category = require('./category');
 module.exports = (sequelize, DataTypes) => {
   class Subcategorie extends Model {
@@ -10,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate(db) {
+      Subcategorie.hasMany(db.Product, { foreignKey: 'id_subcate' });
+      console.log('Okkkkkkkkkkkkkkkkk',db.Product);
     }
   }
   Subcategorie.init({

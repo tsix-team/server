@@ -2,11 +2,12 @@
 const {
   Model
 } = require('sequelize');
+import db from '../models';
 module.exports = (sequelize, DataTypes) => {
   class Categorie extends Model {
 
-    static associate(models) {
-      
+    static associate(db) {
+      Categorie.hasMany(db.Subcategorie, { foreignKey: 'id_cate' });
     }
   }
   Categorie.init({

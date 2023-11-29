@@ -74,15 +74,15 @@ export const getByIdCate = async (req, res) =>{
 }
 export const updateCate = async (req, res) =>{
     const {id} = req.params
-    const {name} = req.body
+    const formData = {...req.body}
 
     try {
-        if (!name||!id) return res.status(400).json({
+        if (!formData.name_cate||!id) return res.status(400).json({
             err:1,
             msg:'thiếu gì đó rồi!'
         })
         const finder = {id_cate:id}
-        const objUpdate = {name_cate:name}
+        const objUpdate = {name_cate:formData.name_cate, slug:slugger(formData.name_cate)}
         const response = await crudService.update(finder,objUpdate,model)
         console.log(response);
         return res.status(200).json(response)

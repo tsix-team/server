@@ -1,22 +1,26 @@
 import express from 'express'
-import * as cateController from '../controllers/product'
+import * as pdController from '../controllers/product'
 import uploadCloud from '../config/cloudinary.config';
 
 const router = express.Router();
 
-router.get('/',cateController.getPdLimit)
+router.get('/',pdController.getPdLimit)
 
-router.get('/all',cateController.getPd)
+router.get('/all',pdController.getPd)
 
-router.get('/imgs/:id',cateController.getPdImgs)
+router.get('/cate/:slug',pdController.getPdByCate)
 
-router.get('/:id',cateController.getOnePd)
+router.get('/subcate/:slug',pdController.getPdBySubCate)
 
-router.post('/',uploadCloud.none(),cateController.addPd)
+router.get('/imgs/:id',pdController.getPdImgs)
 
-router.put('/:id',uploadCloud.none(),cateController.updatePd)
+router.get('/:id',pdController.getOnePd)
 
-router.delete('/:id',cateController.deletePd)
+router.post('/',uploadCloud.none(),pdController.addPd)
+
+router.put('/:id',uploadCloud.none(),pdController.updatePd)
+
+router.delete('/:id',pdController.deletePd)
 
 
 export default router

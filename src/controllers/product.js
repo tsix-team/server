@@ -5,6 +5,8 @@ import { slugger } from '../services/lib'
 
 const model = { modelName: 'product', what: 'sản phẩm' }
 const modelImg = { modelName: 'image', what: 'hình ảnh' }
+const modelSubCate = { modelName: 'subcate', what: 'danh mục con' }
+const modelCate = { modelName: 'cate', what: 'danh mục' }
 
 /** What to do now
  * bây giờ thêm sản phẩm với form có 1 ảnh chính và nhiều ảnh phụ, đã làm xong nhiều ảnh phụ còn ảnh chính thôi
@@ -34,10 +36,10 @@ export const addPd = async (req, res) => {
 
         console.log("img here: ", uploadedImage, uploadedImages);
         const finder = { name_pd: formData.name_pd }
-        
-        const creater = uploadedImage ?  
+
+        const creater = uploadedImage ?
             { ...formData, slug: slugger(formData.name_pd), image: uploadedImage[0]?.path }
-            :{ ...formData, slug: slugger(formData.name_pd), image: 'none' }
+            : { ...formData, slug: slugger(formData.name_pd), image: 'none' }
         const response = await crudService.add(finder, creater, model)
         if (response && response.err == 0) {
             // uploadedImages là 1 mảng chứa các đối tượng image, tromg image có path url
@@ -83,27 +85,34 @@ export const deletePd = async (req, res) => {
         const finder = { id_pd: id }
         const findImgs = await crudService.getAllWhere(finder, modelImg)
         const findPd = await crudService.getOne(finder, model)
-        if (findImgs.response == []||findImgs.response == null) {
-             const imgs = findImgs.response
-             imgs.forEach(image => {
+        if (findImgs.response.length > 0) {
+            console.log('Remoove imgs on cloud..', findImgs);
+            const imgs = findImgs.response
+            imgs.forEach(image => {
                 cloudinary.uploader.destroy(image.filename)
             });
             await crudService.deleteOne(finder, modelImg)
         }
-        if (findPd.response == [] ||findPd.response == null) {
+        if (findPd.response) {
             const img = findPd?.response
-            const urlImg = img.image
-        
+            const urlImg = img?.image
+            console.log('url img.....', urlImg);
+            if (urlImg !== 'none') {
+                const parts = urlImg?.split('/')
+                const fileParts = parts?.slice(-2).join('/')
+                const filenameImg = fileParts?.split('.').slice(0, -1).join('.')
+                //destroy imgs on cloud
+                if (filenameImg) {
+                    await cloudinary.uploader.destroy(filenameImg)
+                }
+            }
             //convert url to filename
-            const parts = urlImg.split('/')
-            const fileParts = parts.slice(-2).join('/')
-            const filenameImg = fileParts.split('.').slice(0, -1).join('.')
-            //destroy imgs on cloud
-            await cloudinary.uploader.destroy(filenameImg)
+
         }
         const response = await crudService.deleteOne(finder, model)
         return res.status(200).json(response)
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             err: -1,
             msg: 'Fail at controller: ' + error
@@ -155,15 +164,15 @@ export const getPdImgs = async (req, res) => {
     }
 }
 export const getOnePd = async (req, res) => {
-    
+
     try {
         let isId
         if (/^\d+$/.test(req.params.id)) {
-            isId = true 
-          } else {
+            isId = true
+        } else {
             isId = false
-          }
-        const finder = isId ? { id_pd: req.params.id } : {slug:req.params.id}
+        }
+        const finder = isId ? { id_pd: req.params.id } : { slug: req.params.id }
         const response = await crudService.getOne(finder, model)
         console.log('res from controller: ', response);
         return res.status(200).json(response)
@@ -271,6 +280,49 @@ export const deleteImgs = async (req, res) => {
     try {
         const finder = { id_pd: id }
         const response = await crudService.deleteOne(finder, modelImg)
+        console.log('res from controller: ', response);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Fail at controller: ' + error
+        })
+    }
+}
+
+export const getPdByCate = async (req, res) => {
+
+    // const page = req.query.page || 1 // Trang thứ 2
+    // const size = req.query.size || 8 // Số bản ghi trên mỗi trang
+
+    // const offset = (page - 1) * size // Tính offset
+    // const limit = size * 1
+    const {slug} = req.params
+    try {
+        const cate = await crudService.getOne({slug},modelCate)
+        const id_cate = cate.response.id_cate
+        const response = await crudService.getOneDetail({id_cate})
+        console.log('res from controller: ', response);
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Fail at controller: ' + error
+        })
+    }
+}
+export const getPdBySubCate = async (req, res) => {
+
+    // const page = req.query.page || 1 // Trang thứ 2
+    // const size = req.query.size || 8 // Số bản ghi trên mỗi trang
+
+    // const offset = (page - 1) * size // Tính offset
+    // const limit = size * 1
+    const {slug} = req.params
+    try {
+        const subcate = await crudService.getOne({slug},modelSubCate)
+        const id_subcate = subcate.response.id_subcate
+        const response = await crudService.getLimit({where:{id_subcate}},model)
         console.log('res from controller: ', response);
         return res.status(200).json(response)
     } catch (error) {

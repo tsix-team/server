@@ -52,8 +52,11 @@ export const getAllUser = async (req, res) =>{
 
     const offset = (page - 1) * size // Tính offset
     const limit = size*1
+    const order = [
+        ['role', 'DESC'] // Sắp xếp theo role giảm dần
+      ]
     try {
-        const response = await crudService.getLimit({offset,limit},model)
+        const response = await crudService.getLimit({offset,limit,order},model)
         console.log(response);
         return res.status(200).json(response)
     } catch (error) {
@@ -77,21 +80,22 @@ export const getOneUser = async (req, res) =>{
     }
 }
 export const updateUser = async (req, res) =>{
-    const dataForm = {
-        email:req.body.email,
-        password:req.body.password,
-        role:req.body.role || 0,
-        status:req.body.status || 0
-    }
+    // const dataForm = {
+    //     email:req.body.email,
+    //     password:req.body.password,
+    //     role:req.body.role || 0,
+    //     status:req.body.status || 0
+    // }
+    const {password,...dataForm} = req.body
     console.log(dataForm);
     try {
-        if (!dataForm.email||!dataForm.password) return res.status(400).json({
+        if (!dataForm.email) return res.status(400).json({
             err:1,
             msg:'thiếu gì đó rồi!'
         })
         const finder = {id_user:req.params.id}
         
-        const objUpdate = {email:dataForm.email, password: hashPassword(dataForm.password),role:dataForm.role,status:dataForm.status}
+        const objUpdate = password ? {...dataForm, password: hashPassword(password)} : dataForm
         const response = await crudService.update(finder,objUpdate,model)
         console.log(response);
         return res.status(200).json(response)
