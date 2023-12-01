@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true, 
     },
     status: DataTypes.STRING,
-    total_amount: DataTypes.DOUBLE,
+    payment: DataTypes.STRING,
+    total_amount: DataTypes.INTEGER,
     id_user: DataTypes.STRING,
     note: DataTypes.STRING
   }, {

@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(db) {
       Subcategorie.hasMany(db.Product, { foreignKey: 'id_subcate' });
-      console.log('Okkkkkkkkkkkkkkkkk',db.Product);
     }
   }
   Subcategorie.init({
