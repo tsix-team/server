@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 30, 2023 lúc 04:47 AM
+-- Thời gian đã tạo: Th12 04, 2023 lúc 01:27 PM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.2.4
 
@@ -81,12 +81,23 @@ INSERT INTO `images` (`id_pd`, `url`, `alt`, `filename`, `createdAt`, `updatedAt
 CREATE TABLE `orders` (
   `id_order` int(10) UNSIGNED NOT NULL,
   `status` varchar(255) NOT NULL,
-  `total_amount` double(8,2) NOT NULL,
+  `payment` varchar(255) NOT NULL DEFAULT 'delivery',
+  `total_amount` int(11) NOT NULL,
   `id_user` varchar(255) NOT NULL,
   `note` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `orders`
+--
+
+INSERT INTO `orders` (`id_order`, `status`, `payment`, `total_amount`, `id_user`, `note`, `createdAt`, `updatedAt`) VALUES
+(4, '2', 'online update', 0, 'lp46016w', 'update note 4 status', '2023-12-02 09:37:51', '2023-12-04 10:49:12'),
+(5, '0', 'online', 0, 'admin001', 'o 3', '2023-12-02 09:38:38', '2023-12-02 09:38:38'),
+(6, '0', 'online 2', 0, 'lp46016w', 'o 3 4 ', '2023-12-02 09:46:05', '2023-12-02 09:46:05'),
+(7, '0', 'online 2 5', 60000024, 'lp46016w', 'o 3 4 5', '2023-12-02 09:47:35', '2023-12-02 09:47:35');
 
 -- --------------------------------------------------------
 
@@ -98,10 +109,23 @@ CREATE TABLE `order_details` (
   `id_order` int(11) NOT NULL,
   `id_pd` int(11) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 1,
-  `total_amount` double(8,2) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `order_details`
+--
+
+INSERT INTO `order_details` (`id_order`, `id_pd`, `quantity`, `createdAt`, `updatedAt`) VALUES
+(4, 10, 5, '2023-12-02 09:37:51', '2023-12-02 09:37:51'),
+(4, 12, 2, '2023-12-02 09:37:51', '2023-12-02 09:37:51'),
+(5, 10, 5, '2023-12-02 09:38:38', '2023-12-02 09:38:38'),
+(5, 12, 2, '2023-12-02 09:38:38', '2023-12-02 09:38:38'),
+(6, 10, 5, '2023-12-02 09:46:05', '2023-12-02 09:46:05'),
+(6, 12, 2, '2023-12-02 09:46:05', '2023-12-02 09:46:05'),
+(7, 10, 5, '2023-12-02 09:47:35', '2023-12-02 09:47:35'),
+(7, 12, 2, '2023-12-02 09:47:35', '2023-12-02 09:47:35');
 
 -- --------------------------------------------------------
 
@@ -218,17 +242,17 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `name`, `phone`, `address`, `email`, `password`, `role`, `status`, `createdAt`, `updatedAt`) VALUES
-('lofqh50r', 'Đinh Ngọc Hoàng', '0762752760', 'Update xuống nhân viên, không thay đổi password\r\n', 'hoang', '$2a$10$kvf9FrnzBn5Nd/2TjvNzZeS34DLzIvnY3CVFu5GfxgfBFsob5Uxfe', 1, 0, '2023-11-01 12:28:04', '2023-11-21 10:32:33'),
+('002', 'Đinh Ngọc Hoàng', '0762752760', 'Update xuống nhân viên, không thay đổi password\r\n', 'hoang', '$2a$10$kvf9FrnzBn5Nd/2TjvNzZeS34DLzIvnY3CVFu5GfxgfBFsob5Uxfe', 1, 0, '2023-11-01 12:28:04', '2023-11-21 10:32:33'),
+('admin001', 'Admin', '0000000001', 'da nang', 'anotheradmin@gmail.com', '$2a$10$DEAfA8uUaCY6hJq6zrt34uZZNnpNJDEmOeFbjR5j75s2Z4oWjKMtq', 2, 0, '2023-11-15 06:13:54', '2023-11-15 06:13:54'),
 ('logom3jg', 'hoang27810', '0111111111', 'đổi mk thành 123', 'ngochoang27810@gmail.com', '$2a$10$oe6TUHi9Uy7H5xVENFBOX.X0X2JNVzZZWfdN5Q7I/pkFEIVBY0m.6', 0, 0, '2023-11-02 04:23:42', '2023-11-21 10:33:42'),
 ('logp0dvt', 'dinh hoang', '0999922222', 'vn', 'hoang2@gmail.com', '$2a$10$Pt7co8cACK/.3POFfrlYz.uFZ.svOkKovLSCzlyrgjmTRUNNcqsGy', 0, -1, '2023-11-02 04:34:49', '2023-11-15 08:02:09'),
 ('logw1vzq', 'Huy', '09999999', 'Việt Nam', 'huy@gmail.com', '$2a$10$lc4O0FJxg40fo2YsIo6wa.yea8bNilcAjt/kxQZ9RbXQVt/RDkiDe', 1, 0, '2023-11-02 07:51:56', '2023-11-15 06:21:07'),
 ('lok3xqdz', NULL, NULL, NULL, 'hoang3', '$2a$10$uq7XawS9IeRP/otDtbnKRupP4UeMiJQ/dKfKhI8gwl8HpoMN/cijO', 1, -1, '2023-11-04 13:55:58', '2023-11-14 09:35:29'),
 ('lok462z2', 'h', '123', 'mk 1', 'admin@gmail.com', '$2a$10$cyp.kzPiFY7L7.ozalzPkOMRZg806JmW3zKaSp5b3lgQqcBjAgYYS', 2, 0, '2023-11-04 14:02:27', '2023-11-22 06:59:26'),
-('lozd9w59', 'Admin', '0000000001', 'da nang', 'anotheradmin@gmail.com', '$2a$10$DEAfA8uUaCY6hJq6zrt34uZZNnpNJDEmOeFbjR5j75s2Z4oWjKMtq', 2, 0, '2023-11-15 06:13:54', '2023-11-15 06:13:54'),
 ('lozdkbfy', 'Nhân viên hoàng', '0512612', 'dn', 'hoangnv@gmail.com', '$2a$10$f49A/BB7PtTZ5kJQN5XHw.P8jCVRvBQGWkxA1c4lsUgAPUc9ttyVy', 1, -1, '2023-11-15 06:22:01', '2023-11-15 08:02:07'),
 ('lozi12fc', 'khách', '123', 'vn', 'khachhang@gmail.com', '$2a$10$KRuERpMi8F1YrZRQiDxkM.uQ83RaFWK3sRTVv1w.a/5t0YtWMoPGu', 0, 0, '2023-11-15 08:27:01', '2023-11-15 08:27:01'),
 ('lozk2vly', 'last test edit', '023123123', 'no password change', 'test@gmail.com', '$2a$10$2jmIMQEisKvWjno5LZBS0uZG.5UsxUTTIW.R77t4p2MOq/sltJZGi', 0, 0, '2023-11-15 09:24:24', '2023-11-21 10:31:12'),
-('lp46016w', 'khach hang', NULL, NULL, 'hoang3@gmail.com', '$2a$10$mhp4UZZkXXd6ZbMyRcTi/OiIbSAoBfXckW0y1HwMnsVnTYTRt0SuC', 0, 0, '2023-11-18 14:49:08', '2023-11-18 14:49:08');
+('lp46016w', 'hoang e 2', '0212121221', 'da nang 2', 'hoang3@gmail.com', '$2a$10$mhp4UZZkXXd6ZbMyRcTi/OiIbSAoBfXckW0y1HwMnsVnTYTRt0SuC', 0, 0, '2023-11-18 14:49:08', '2023-12-02 09:47:35');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -280,13 +304,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id_cate` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_cate` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id_order` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_order` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT cho bảng `posts`
