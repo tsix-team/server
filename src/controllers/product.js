@@ -135,7 +135,6 @@ export const getPdLimit = async (req, res) => {
 
     const page = req.query.page || 1 // Trang thứ 2
     const size = req.query.size || 8 // Số bản ghi trên mỗi trang
-
     const offset = (page - 1) * size // Tính offset
     const limit = size * 1
     try {

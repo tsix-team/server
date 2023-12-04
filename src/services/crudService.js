@@ -8,7 +8,9 @@ const models = {
     user: db.User,
     product: db.Product,
     image: db.Image,
-    post:db.Post
+    post:db.Post,
+    order:db.Order,
+    order_detail:db.Order_detail
   };
 export const add = (objFinder,objCreate,model) => new Promise( async (resolve,reject) =>{
     // cần truyền vào: obj {name_cate:name},obj {name_cate:name,slug:slugger(name)}, model name

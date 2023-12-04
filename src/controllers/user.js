@@ -48,7 +48,7 @@ export const removeUser = async (req, res) =>{
 }
 export const getAllUser = async (req, res) =>{
     const page = req.query.page || 1 // Trang thứ 2
-    const size = req.query.size || 10 // Số bản ghi trên mỗi trang
+    const size = req.query.size || 20 // Số bản ghi trên mỗi trang
 
     const offset = (page - 1) * size // Tính offset
     const limit = size*1
