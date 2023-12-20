@@ -49,14 +49,14 @@ export const removeUser = async (req, res) =>{
 export const getAllUser = async (req, res) =>{
     const page = req.query.page || 1 // Trang thứ 2
     const size = req.query.size || 20 // Số bản ghi trên mỗi trang
-
+    const role = req.query.role || [0] 
     const offset = (page - 1) * size // Tính offset
     const limit = size*1
     const order = [
         ['role', 'DESC'] // Sắp xếp theo role giảm dần
       ]
     try {
-        const response = await crudService.getLimit({offset,limit,order},model)
+        const response = await crudService.getLimit({where:{role}, offset,limit,order},model)
         console.log(response);
         return res.status(200).json(response)
     } catch (error) {

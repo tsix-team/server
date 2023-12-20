@@ -134,11 +134,14 @@ export const getPd = async (req, res) => {
 export const getPdLimit = async (req, res) => {
 
     const page = req.query.page || 1 // Trang thứ 2
-    const size = req.query.size || 8 // Số bản ghi trên mỗi trang
+    const size = req.query.size || 18 // Số bản ghi trên mỗi trang
+    const order = [
+        ['id_pd', 'DESC'] // Sắp xếp theo role giảm dần
+      ]
     const offset = (page - 1) * size // Tính offset
     const limit = size * 1
     try {
-        const response = await crudService.getLimit({ offset, limit }, model)
+        const response = await crudService.getLimit({ offset, limit, order:order }, model)
         console.log('res from controller: ', response);
         return res.status(200).json(response)
     } catch (error) {

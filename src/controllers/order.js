@@ -17,20 +17,22 @@ const modelUser = { modelName: 'user', what: 'tài khoản' }
  */
 
 export const addOrder = async (req, res) => {
-    const { id_user, note, payment, name, phone, address } = req.body
+    const { id_user, note, payment, name, phone, address, orderList } = req.body
     //id_pd = [1,3,4,...]
     //orderList = [{id_pd:1, qt:2},{},{}]
     try {
+        //const orderList = [{ id_pd: 10, qt: 5 }, { id_pd: 12, qt: 2 }]
         //const orderList = JSON.parse(orderList1.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":'))
-        const orderList = [{ id_pd: 10, qt: 5 }, { id_pd: 12, qt: 2 }]
         // const user = await crudService.getOne({ id_user }, modelUser)
         // const dataUser = user.response
         // if (dataUser && phone || dataUser && address) {
         //     await crudService.update({ id_user }, { phone, name, address }, modelUser)
         // console.log('debugggggg00000000:');
         // }
+        console.log('req.body:', req.body);
+        
         const listIdPd = orderList.map(item => item.id_pd)
-        console.log('debugggggg12 listIdPd:', listIdPd);
+        console.log('debugggggg12 listIdPd orderList:', listIdPd, orderList);
         const products = await crudService.getAllWhere({ id_pd: listIdPd }, modelPd)
         console.log('debugggggg0000000001111:');
         const dataPd = products.response
@@ -75,14 +77,14 @@ export const addOrder = async (req, res) => {
 }
 
 export const getOrder = async (req, res) => {
-    const status = req.query.status || 0
-    const payment = req.query.payment || undefined
+    const status = req.query.status || [0,1,2,-1]
+    //const payment = req.query.payment || undefined
     const page = req.query.page || 1 // Trang thứ 2
     const size = req.query.size || 20 // Số bản ghi trên mỗi trang
     const offset = (page - 1) * size // Tính offset
     const limit = size * 1
     try {
-        const order = await crudService.getLimit({ where: { status }, offset, limit }, model)
+        const order = await crudService.getLimit({ where: { status }, offset, limit,order:[['id_order','DESC']] }, model)
         const orders = order.response
         if (orders) {
             const detail = await crudService.getAll(modelDetail)
@@ -185,7 +187,7 @@ export const getByIdOrder = async (req, res) => {
                 namePds.push(dataPdOrder[0]?.name_pd)
             })
             const dataOrder = {
-                ...orders, phone: dataUsers?.phone, address: dataUsers?.address, name: dataUsers?.name, namePds: namePds.join(', '),
+                ...orders, phone: dataUsers?.phone, email: dataUsers?.email, address: dataUsers?.address, name: dataUsers?.name, namePds: namePds.join(', '),
                 listPdOrder
             };
             //console.log('orders_details', orders_details)
