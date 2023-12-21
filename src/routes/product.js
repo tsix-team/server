@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get('/',pdController.getPdLimit)
 
+router.get('/search/keyword',pdController.searchPd)
+
 router.get('/all',pdController.getPd)
 
 router.get('/cate/:slug',pdController.getPdByCate)

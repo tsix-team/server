@@ -23,7 +23,11 @@ export const registerService = ({name,email,password}) => new Promise( async (re
         const token = response?  jwt.sign(
             {
                 id_user:data_user.id_user,
-                email:data_user.email
+                email:data_user.email,
+                name:response.name,
+                role:response.role,
+                phone:response.phone,
+                address:response.address
             },
             process.env.SECRET_KEY,
             {expiresIn:'30d'}
@@ -68,7 +72,9 @@ export const loginService = ({email,password}) => new Promise( async (resolve,re
                     id_user:user.id_user,
                     email:user.email,
                     name:user.name,
-                    role:user.role
+                    role:user.role,
+                    phone:user.phone,
+                    address:user.address
                 },
                 process.env.SECRET_KEY,
                 {expiresIn:'30d'}

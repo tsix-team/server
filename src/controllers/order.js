@@ -18,31 +18,16 @@ const modelUser = { modelName: 'user', what: 'tài khoản' }
 
 export const addOrder = async (req, res) => {
     const { id_user, note, payment, name, phone, address, orderList } = req.body
-    //id_pd = [1,3,4,...]
     //orderList = [{id_pd:1, qt:2},{},{}]
     try {
-        //const orderList = [{ id_pd: 10, qt: 5 }, { id_pd: 12, qt: 2 }]
-        //const orderList = JSON.parse(orderList1.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":'))
-        // const user = await crudService.getOne({ id_user }, modelUser)
-        // const dataUser = user.response
-        // if (dataUser && phone || dataUser && address) {
-        //     await crudService.update({ id_user }, { phone, name, address }, modelUser)
-        // console.log('debugggggg00000000:');
-        // }
-        console.log('req.body:', req.body);
-        
         const listIdPd = orderList.map(item => item.id_pd)
-        console.log('debugggggg12 listIdPd orderList:', listIdPd, orderList);
         const products = await crudService.getAllWhere({ id_pd: listIdPd }, modelPd)
-        console.log('debugggggg0000000001111:');
         const dataPd = products.response
         const pdInfo = {};
-        console.log('debugggggg11111 dataPd:', dataPd);
         dataPd.forEach(pd => {
             const { id_pd, price } = pd;
             pdInfo[id_pd] = { id_pd, price };
         });
-        console.log('debugggggg222');
 
         const totalAmountByQuantity = orderList.reduce((total, pdOder) => {
             const { id_pd, qt } = pdOder;
@@ -52,21 +37,16 @@ export const addOrder = async (req, res) => {
             }
             return total;
         }, 0);
-        console.log('debugggggg1113333 totalAmountByQuantity:', totalAmountByQuantity);
 
         const createOrder = { id_user, note, payment, status: 0, total_amount: totalAmountByQuantity }
         const responseOrder = await crudService.addRaw(createOrder, model)
-        console.log('debugggggg444444444:');
 
         const id_order = responseOrder.response.id_order
         const createOrderDetail = orderList.map(order => {
             return { id_order, id_pd: order.id_pd, quantity: order.qt }
         })
-        console.log('debugggggg4445 createOrderDetail:', createOrderDetail);
         const responseOrderDetail = await crudService.addMulti(createOrderDetail, modelDetail)
-        console.log('debugggggg155555555:');
         const updateInfoUser = await crudService.update({ id_user }, { name, phone, address }, modelUser)
-        console.log('totalAmountByQuantity createOrder responseOrder createOrderDetail responseOrderDetail updateInfoUser', totalAmountByQuantity, createOrder, responseOrder, createOrderDetail, responseOrderDetail, updateInfoUser);
         return res.status(200).json(createOrder)
     } catch (error) {
         return res.status(500).json({
@@ -111,7 +91,6 @@ export const getOrder = async (req, res) => {
                 const order_list = orderDetails?.map(({ id_order, createdAt, updatedAt, ...rest }) => rest); // Loại bỏ id_order trong chi tiết đơn hàng
                 const namePds = []
                 const listPdOrder = []
-                console.log('orderDetails ,order_list,, listDataPdOrder: ', orderDetails, order_list);
                 order_list?.forEach((pdOrder) => {
                     const dataPdOrder = dataProducts?.filter(pd => pd.id_pd == pdOrder.id_pd)
                     listPdOrder.push({
@@ -228,20 +207,20 @@ export const updateOrder = async (req, res) => {
         })
     }
 }
-export const deleteOrder = async (req, res) => {
-    const { id } = req.params
-    try {
-        const finder = { id_order: id }
-        const response = await crudService.deleteOne(finder, model)
-        const response2 = await crudService.deleteOne(finder, modelDetail)
-        console.log(response);
-        return res.status(200).json({
-            response, response2
-        })
-    } catch (error) {
-        return res.status(500).json({
-            err: -1,
-            msg: 'Fail at controller: ' + error
-        })
-    }
-}
+// export const deleteOrder = async (req, res) => {
+//     const { id } = req.params
+//     try {
+//         const finder = { id_order: id }
+//         const response = await crudService.deleteOne(finder, model)
+//         const response2 = await crudService.deleteOne(finder, modelDetail)
+//         console.log(response);
+//         return res.status(200).json({
+//             response, response2
+//         })
+//     } catch (error) {
+//         return res.status(500).json({
+//             err: -1,
+//             msg: 'Fail at controller: ' + error
+//         })
+//     }
+// }

@@ -146,9 +146,10 @@ export const getSubcate = async (req, res) =>{
 export const getSubcateByIdCate = async (req, res) =>{
     //find all subcate where id_cate = id_cate
     try {
-        const finder = {id_cate:req.params.id}
+        const isId = /^\d+(\.\d+)?$/.test(req.params.id) ? true : false
+        const finder = isId? {id_cate:req.params.id} : {slug:req.params.id}
         const response = await crudService.getAllWhere(finder, modelSubcate)
-        console.log('res from controller: ',response);
+        console.log('res from controller: ',response,req.params.id);
         return res.status(200).json(response)
     } catch (error) {
         return res.status(500).json({
@@ -159,7 +160,8 @@ export const getSubcateByIdCate = async (req, res) =>{
 }
 export const getSubcateByIdSubcate = async (req, res) =>{
     try {
-        const finder = {id_subcate:req.params.id}
+        const isId = /^\d+(\.\d+)?$/.test(req.params.id) ? true : false
+        const finder = isId? {id_cate:req.params.id} : {slug:req.params.id}
         const response = await crudService.getOne(finder, modelSubcate)
         console.log('res from controller: ',response);
         return res.status(200).json(response)

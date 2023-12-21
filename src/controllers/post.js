@@ -1,3 +1,4 @@
+// 
 import cloudinary from 'cloudinary/cloudinary'
 
 import * as crudService from '../services/crudService'
@@ -5,10 +6,7 @@ import { slugger } from '../services/lib'
 
 const model = { modelName: 'post', what: 'bài viết' }
 
-/** What to do now
- * bây giờ thêm sản phẩm với form có 1 ảnh chính và nhiều ảnh phụ, đã làm xong nhiều ảnh phụ còn ảnh chính thôi
- */
-
+// xử lí thêm môt bài viết
 export const addPost = async (req, res) => {
     const { uploadedImage, ...formData } = req.body
     console.log('Img postt:',uploadedImage);
@@ -48,6 +46,7 @@ export const addPost = async (req, res) => {
         })
     }
 }
+// Xử lí xóa một bài viết
 export const deletePost = async (req, res) => {
     const { id } = req.params
     try {
@@ -57,11 +56,9 @@ export const deletePost = async (req, res) => {
         if (findPost.response == [] ||findPost.response == null) {
             const img = findPost?.response
             const urlImg = img.addImages
-            //convert url to filename
             const parts = urlImg.split('/')
             const fileParts = parts.slice(-2).join('/')
             const filenameImg = fileParts.split('.').slice(0, -1).join('.')
-            //destroy imgs on cloud
             await cloudinary.uploader.destroy(filenameImg)
         }
         const response = await crudService.deleteOne(finder, model)
@@ -73,6 +70,8 @@ export const deletePost = async (req, res) => {
         })
     }
 }
+
+// Lấy tất cả các bài viết
 export const getPost = async (req, res) => {
     try {
         const response = await crudService.getAll(model)
@@ -85,6 +84,8 @@ export const getPost = async (req, res) => {
         })
     }
 }
+
+// Lấy giới hạn số bài viết
 export const getPostLimit = async (req, res) => {
 
     const page = req.query.page || 1 // Trang hiện tại
@@ -103,6 +104,7 @@ export const getPostLimit = async (req, res) => {
         })
     }
 }
+// Lấy danh sách hình ảnh liên quan đến một bài viết cụ thể.
 export const getPostImgs = async (req, res) => {
     //const queries = {...req.query}
     try {
@@ -117,6 +119,7 @@ export const getPostImgs = async (req, res) => {
         })
     }
 }
+// Lấy thông tin của một bài viết dựa trên ID hoặc slug của nó.
 export const getOnePost = async (req, res) => {
     
     try {
@@ -137,9 +140,10 @@ export const getOnePost = async (req, res) => {
         })
     }
 }
+// Xử lý việc cập nhật một bài viết.
 export const updatePost = async (req, res) => {
     const { id } = req.params
-    const { uploadedImage, uploadedImages, ...formData } = req.body
+    const { uploadedImage, ...formData } = req.body
     let isValidate = true
     try {
         if (!formData.title) {
@@ -156,20 +160,17 @@ export const updatePost = async (req, res) => {
         console.log("img here: ", uploadedImage);
         const finder = { id_post: id }
         const findPost = await crudService.getOne(finder, model)
-        const creater = uploadedImage ? { ...formData, slug: slugger(formData.name_Post), image: uploadedImage?.path }
-            : { ...formData, slug: slugger(formData.name_Post) }
+        const creater = uploadedImage ? { ...formData, slug: slugger(formData.title), image: uploadedImage?.path }
+            : { ...formData, slug: slugger(formData.title) }
         const response = await crudService.update(finder, creater, model)
         
         if (response && response.err == 0 && uploadedImage) {
-            //remove img on cloud
             const img = findPost.response
             console.log(img)
             const urlImg = img.image
-            //convert url to filename
             const parts = urlImg.split('/')
             const fileParts = parts.slice(-2).join('/')
             const filenameImg = fileParts.split('.').slice(0, -1).join('.')
-            //destroy imgs on cloud
             await cloudinary.uploader.destroy(filenameImg)
         } else if (response && response.err == 2) {
             isValidate = false

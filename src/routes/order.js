@@ -10,7 +10,7 @@ router.post('/',orderController.addOrder)
 
 router.put('/:id',orderController.updateOrder)
 
-router.delete('/:id',orderController.deleteOrder)
+//router.delete('/:id',orderController.deleteOrder)
 
 
 
