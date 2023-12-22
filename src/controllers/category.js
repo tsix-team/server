@@ -161,7 +161,7 @@ export const getSubcateByIdCate = async (req, res) =>{
 export const getSubcateByIdSubcate = async (req, res) =>{
     try {
         const isId = /^\d+(\.\d+)?$/.test(req.params.id) ? true : false
-        const finder = isId? {id_cate:req.params.id} : {slug:req.params.id}
+        const finder = isId? {id_subcate:req.params.id} : {slug:req.params.id}
         const response = await crudService.getOne(finder, modelSubcate)
         console.log('res from controller: ',response);
         return res.status(200).json(response)

@@ -4,6 +4,8 @@ const router = express.Router();
 
 router.post('/',userController.addUser)
 
+router.get('/count',userController.countUser)
+
 router.get('/',userController.getAllUser)
 
 router.get('/:id',userController.getOneUser)

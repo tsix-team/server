@@ -4,6 +4,8 @@ const router = express.Router();
 
 router.get('/',orderController.getOrder)
 
+router.get('/count',orderController.countOrder)
+
 router.get('/:id',orderController.getByIdOrder)
 
 router.post('/',orderController.addOrder)

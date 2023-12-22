@@ -135,12 +135,12 @@ export const getPdLimit = async (req, res) => {
     const page = req.query.page || 1 // Trang thứ 2
     const size = req.query.size || 18 // Số bản ghi trên mỗi trang
     const order = [
-        ['id_pd', 'DESC'] // Sắp xếp theo role giảm dần
-      ]
+        ['createdAt', 'DESC'] // Sắp xếp theo giảm dần
+    ]
     const offset = (page - 1) * size // Tính offset
     const limit = size * 1
     try {
-        const response = await crudService.getLimit({ offset, limit, order:order }, model)
+        const response = await crudService.getLimit({ offset, limit, order: order }, model)
         console.log('res from controller: ', response);
         return res.status(200).json(response)
     } catch (error) {
@@ -168,7 +168,7 @@ export const getPdImgs = async (req, res) => {
 export const getOnePd = async (req, res) => {
 
     try {
-        let isId = (/^\d+$/.test(req.params.id))? true : false
+        let isId = (/^\d+$/.test(req.params.id)) ? true : false
         // if (/^\d+$/.test(req.params.id)) {
         //     isId = true
         // } else {
@@ -294,16 +294,16 @@ export const deleteImgs = async (req, res) => {
 
 export const getPdByCate = async (req, res) => {
 
-    // const page = req.query.page || 1 // Trang thứ 2
-    // const size = req.query.size || 8 // Số bản ghi trên mỗi trang
+    const page = req.query.page || 1 // Trang thứ 2
+    const size = req.query.size || 10 // Số bản ghi trên mỗi trang
 
-    // const offset = (page - 1) * size // Tính offset
-    // const limit = size * 1
-    const {slug} = req.params
+    const offset = (page - 1) * size // Tính offset
+    const limit = size * 1
+    const { slug } = req.params
     try {
-        const cate = await crudService.getOne({slug},modelCate)
+        const cate = await crudService.getOne({ slug }, modelCate)
         const id_cate = cate.response.id_cate
-        const response = await crudService.getOneDetail({id_cate})
+        const response = await crudService.getOneDetail({ id_cate })
         console.log('res from controller: ', response);
         return res.status(200).json(response)
     } catch (error) {
@@ -315,16 +315,18 @@ export const getPdByCate = async (req, res) => {
 }
 export const getPdBySubCate = async (req, res) => {
 
-    // const page = req.query.page || 1 // Trang thứ 2
-    // const size = req.query.size || 8 // Số bản ghi trên mỗi trang
-
-    // const offset = (page - 1) * size // Tính offset
-    // const limit = size * 1
-    const {slug} = req.params
+    const page = req.query.page || 1 // Trang thứ 2
+    const size = req.query.size || 10 // Số bản ghi trên mỗi trang
+    const order = [
+        ['createdAt', 'DESC'] // Sắp xếp theo giảm dần
+    ]
+    const offset = (page - 1) * size // Tính offset
+    const limit = size * 1
+    const { slug } = req.params
     try {
-        const subcate = await crudService.getOne({slug},modelSubCate)
+        const subcate = await crudService.getOne({ slug }, modelSubCate)
         const id_subcate = subcate.response.id_subcate
-        const response = await crudService.getLimit({where:{id_subcate}},model)
+        const response = await crudService.getLimit({ where: { id_subcate }, offset, limit, order }, model)
         console.log('res from controller: ', response);
         return res.status(200).json(response)
     } catch (error) {
@@ -337,23 +339,39 @@ export const getPdBySubCate = async (req, res) => {
 
 //search
 export const searchPd = async (req, res) => {
-    const keyWord = req.query.k
+    const keyWord = req.query.k || ''
     const page = req.query.page || 1 // Trang thứ 2
-    const size = req.query.size || 6 // Số bản ghi trên mỗi trang
+    const size = req.query.size || 10 // Số bản ghi trên mỗi trang
+    const brand = req.query.brand
     const order = [
         ['id_pd', 'DESC'] // Sắp xếp theo role giảm dần
-      ]
+    ]
     const offset = (page - 1) * size // Tính offset
     const limit = size * 1
+    console.log('req.query',req.query)
     try {
-        
-        const response = await crudService.getLimit({where: {
-            name_pd: {
-              [Op.like]: `%${keyWord}%`
-            }
-          }, offset, limit, order:order }, model)
-        console.log('res from controller: ', response);
-        return res.status(200).json(response.response)
+        if (brand) {
+            const response = await crudService.getLimit({
+                where: {
+                    brand: {
+                        [Op.like]: `${brand}`
+                    }
+                }, offset, limit, order: order
+            }, model)
+            console.log('res brandbrand: ',brand, response);
+            return res.status(200).json(response.response)
+        } else {
+            const response = await crudService.getLimit({
+                where: {
+                    name_pd: {
+                        [Op.like]: `%${keyWord}%`
+                    }
+                }, offset, limit, order: order
+            }, model)
+            console.log('res from controller: ', response);
+            return res.status(200).json(response.response)
+        }
+
     } catch (error) {
         return res.status(500).json({
             err: -1,

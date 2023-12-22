@@ -10,7 +10,8 @@ const models = {
     image: db.Image,
     post:db.Post,
     order:db.Order,
-    order_detail:db.Order_detail
+    order_detail:db.Order_detail,
+    comment:db.Comment
   };
 export const add = (objFinder,objCreate,model) => new Promise( async (resolve,reject) =>{
     // cần truyền vào: obj {name_cate:name},obj {name_cate:name,slug:slugger(name)}, model name
@@ -170,7 +171,7 @@ export const getOptional = (options,model) => new Promise( async (resolve,reject
 })
 export const getOneDetail = (finder) => new Promise( async (resolve,reject) =>{
     try {
-        const response = await models['cate'].findAll({where:finder,include: [
+        const response = await models['cate'].findAll({where:finder, include: [
             {
               model: models['subcate'],
               include: [{
@@ -216,6 +217,15 @@ export const addMulti = (arr,model) => new Promise( async (resolve,reject) =>{
             msg: response? `Thêm các ${what} thành công!`: `Thất bại!`,
             response: response
         })
+    } catch (error) {
+        reject(error)
+    }
+})
+export const getCounter = (finder,model) => new Promise( async (resolve,reject) =>{
+    const {modelName} = model
+    try {
+        const response = await models[modelName].findAndCountAll({ where: finder, raw:true })
+        resolve(response)
     } catch (error) {
         reject(error)
     }

@@ -1,8 +1,7 @@
 
 
 import * as crudService from '../services/crudService'
-import { slugger } from '../services/lib'
-
+const { Op } = require("sequelize");
 const model = { modelName: 'order', what: 'đơn hàng' }
 const modelDetail = { modelName: 'order_detail', what: 'đơn hàng chi tiết' }
 const modelPd = { modelName: 'product', what: 'sản phẩm' }
@@ -224,3 +223,23 @@ export const updateOrder = async (req, res) => {
 //         })
 //     }
 // }
+export const countOrder = async (req, res) => {
+    const status = req.query.status
+    let finder = {}
+    if (status) {
+        finder = {status: {[Op.like]: status}}
+    }
+    try {
+        const order = await crudService.getCounter(finder, model)
+        const rows = order.rows
+        const total = rows.reduce((total,row)=>{
+            return total + row.total_amount
+        },0)
+        return res.status(200).json({count: order.count,total})
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Fail at controller: ' + error
+        })
+    }
+}

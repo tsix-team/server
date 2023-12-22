@@ -2,7 +2,7 @@
 import * as crudService from '../services/crudService'
 import bcrypt from 'bcryptjs'
 import uniqid from 'uniqid'
-
+const { Op } = require("sequelize");
 const hashPassword = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 const model = {modelName :'user',what: 'tài khoản'}
 
@@ -24,7 +24,7 @@ export const addUser = async (req, res) =>{
     } catch (error) {
         return res.status(500).json({
             err:-1,
-            msg: 'Fail at auth controller: '+ error
+            msg: 'Fail: '+ error
         })
     }
 }
@@ -89,10 +89,6 @@ export const updateUser = async (req, res) =>{
     const {password,...dataForm} = req.body
     console.log(dataForm);
     try {
-        if (!dataForm.email) return res.status(400).json({
-            err:1,
-            msg:'thiếu gì đó rồi!'
-        })
         const finder = {id_user:req.params.id}
         
         const objUpdate = password ? {...dataForm, password: hashPassword(password)} : dataForm
@@ -128,6 +124,27 @@ export const banUser = async (req, res) =>{
             msg: 'Fail at auth controller: '+ error
         })
     }
+}
+export const countUser = async (req, res) => {
+    const role = req.query.role || 0
+    let finder = {}
+    if (role) {
+        finder = {role: {[Op.like]: role}}
+    }
+    
+    try {
+        const user = await crudService.getCounter(finder, model)
+        //const rows = user.rows
+        // const total = rows.reduce((total,row)=>{
+        //     return total + row.total_amount
+        // },0)
+        return res.status(200).json({count: user.count})
+    } catch (error) {
+        return res.status(500).json({
+            err: -1,
+            msg: 'Fail at controller: ' + error
+        })
+    }   
 }
 // export const testing = () =>{
 //     console.log("OK con de")

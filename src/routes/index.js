@@ -5,6 +5,7 @@ import userRouter from './user'
 import productRouter from './product'
 import postRouter from './post'
 import orderRouter from './order'
+import cmtRouter from './comment'
 require('dotenv').config()
 
 const initRoutes = (app) => {
@@ -15,6 +16,7 @@ const initRoutes = (app) => {
     app.use(`${process.env.API}/product`, productRouter)
     app.use(`${process.env.API}/post`, postRouter)
     app.use(`${process.env.API}/order`, orderRouter)
+    app.use(`${process.env.API}/comment`, cmtRouter)
 
     return app.use('/', (req, res) => {
         res.send('server on...')
